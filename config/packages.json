@@ -1,0 +1,28 @@
+{
+  "packages": [
+    {
+      "name": "基础包",
+      "path": "/path/to/basic-package.zip"
+    },
+    {
+      "name": "扩展包",
+      "path": "/path/to/extension-package.tar.gz"
+    }
+  ],
+  "components": [
+    {
+      "label": "核心组件",
+      "children": [
+        { "label": "基础框架" },
+        { "label": "公共工具" }
+      ]
+    },
+    {
+      "label": "业务组件",
+      "children": [
+        { "label": "用户管理" },
+        { "label": "权限控制" }
+      ]
+    }
+  ]
+}
