@@ -15,5 +15,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
   createUpgradePackage: (config) => ipcRenderer.invoke('package:create', config),
   
   // 日志相关
-  onLog: (callback) => ipcRenderer.on('log', (event, message) => callback(message))
+  onLog: (callback) => ipcRenderer.on('log', (event, message) => callback(message)),
+  
+  // 读取配置文件
+  readConfigFile: () => new Promise((resolve, reject) => {
+    ipcRenderer.send('read-config-file');
+    ipcRenderer.once('config-file-read', (event, data) => {
+      if (data.error) {
+        reject(new Error(data.error));
+      } else {
+        resolve(data.config);
+      }
+    });
+  })
 });

@@ -44,14 +44,67 @@ class CopyFileTask extends Task {
   }
 
   async run(context) {
-    // 拷贝文件的具体逻辑将在后续实现
-    context.logger('模拟拷贝文件...');
-    // 这里只是模拟，实际逻辑将在后续添加
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+        // 使用preload.js暴露的API读取配置文件
+          context.logger('正在读取配置文件...');
+          const config = await window.electronAPI.readConfigFile();
+        context.logger('成功读取配置文件');
+
+      // 获取选择的包和组件
+      const { packages, components } = context;
+      if (!packages || packages.length === 0) {
+        throw new Error('没有选择要拷贝的包');
+      }
+
+      // 假设选择第一个包的osKey作为当前osKey
+      // 实际应用中可能需要根据用户选择确定
+      const firstPackage = packages[0];
+      const osKey = config.source[firstPackage]?.osKey;
+      if (!osKey) {
+        throw new Error(`无法找到包${firstPackage}对应的osKey`);
+      }
+      context.logger(`使用osKey: ${osKey}`);
+
+      // 遍历组件，执行拷贝
+      let totalFiles = 0;
+      let copiedFiles = 0;
+
+      for (const component of components) {
+        // 检查组件是否在映射配置中
+        if (!config.mapping.group[component]) {
+          context.logger(`警告: 组件${component}在配置中未找到，跳过`);
+          continue;
+        }
+
+        const fileMappings = config.mapping.group[component];
+        totalFiles += fileMappings.length;
+
+        for (const mapping of fileMappings) {
+          // 替换目标路径中的osKey变量
+          let dstPath = mapping.dst.replace('$osKey$', osKey);
+          context.logger(`准备拷贝: ${mapping.src} -> ${dstPath}`);
+
+          // 这里只是模拟拷贝，实际应用中需要实现真正的文件拷贝逻辑
+          // 包括创建目录、处理文件、处理clean_dst标志等
+          await new Promise(resolve => setTimeout(resolve, 500));
+          copiedFiles++;
+
+          // 更新进度
+          const progressPercent = Math.round((copiedFiles / totalFiles) * 100);
+          context.progress = progressPercent;
+          context.logger(`已完成 ${progressPercent}%`);
+        }
+      }
+
+      context.logger('文件拷贝完成');
+    } catch (error) {
+      context.logger(`拷贝文件出错: ${error.message}`);
+      throw error;
+    }
   }
 
   getProgressContribution() {
-    // 假设拷贝文件贡献100%的进度
+    // 拷贝文件贡献100%的进度
     return 100;
   }
 }

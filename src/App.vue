@@ -35,7 +35,7 @@
       <el-footer style="padding: 10px; border-top: 1px solid #eee; height: 200px; display: flex; flex-direction: column;">
         <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
           <div style="display: flex; align-items: center; flex: 1;">
-            <span style="white-space: nowrap; margin-right: 10px;">拷贝进度: </span>
+            <span style="white-space: nowrap; margin-right: 10px;">进度: </span>
             <el-progress :percentage="progress" :text-inside="true" stroke-width="18" style="flex: 1;"></el-progress>
           </div>
           <el-button type="default" size="small" @click="clearLogs" style="margin-left: 10px;">清除日志</el-button>
